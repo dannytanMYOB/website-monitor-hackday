@@ -3,13 +3,9 @@ var uuidV4                = require('uuid/v4');
 var elasticsearch         = require('elasticsearch');
 var path                  = require('path');
 var config                = require(path.resolve('config/config'));
-var helpers               = require(path.resolve('helpers/helpers'));
 
 // Constants
 const PARAMETER_ERROR_MESSAGE = 'Unsuccessful document indexing - ensure the right parameters were passed';
-const VALID_ERROR_CATEGORIES = ['apiError', 'serverError'];
-const REQUIRED_ERROR_FIELDS = ['errorId', 'priorityLevel'];
-
 
 // The monitoring service allows you to create errors and events on an ElasticSearch cluster
 class MonitoringService {
@@ -24,8 +20,6 @@ class MonitoringService {
       name: _.get(config, 'environment', ''),
       hostname: ''
     };
-
-    this.application = _.get(config, 'application', undefined);
 
     // Assign document types so can be mapped during doc curation
     this.documentTypes = config.settings.monitoring.documentTypes;
@@ -42,36 +36,27 @@ class MonitoringService {
       if (!eventData) {
         return reject(new Error(PARAMETER_ERROR_MESSAGE));
       }
-      // if (!VALID_ERROR_CATEGORIES.includes(eventData.errorCategory)) {
-      //   return reject(new Error(`Error category: ${eventData.errorCategory} is not registered`));
-      // }
-      // let missingKeys = helpers.missingKeys(eventData, REQUIRED_ERROR_FIELDS);
-      // if (missingKeys) {
-      //   return reject(new Error(`${missingKeys} has not been defined`));
-      // }
 
-      if (eventData.hostname !== self.environment.hostname) {
-        self.environment.hostname = eventData.hostname;
+      if (eventData.environmentHostname !== self.environment.hostname) {
+        self.environment.hostname = eventData.environmentHostname;
       }
-
+console.log('INSIDE MONITORING')
       // Form Document
       var eventDocument = {
-        application: self.application,
-        timestamp : new Date(), 
-
-        environment: self.environment,
-        status: eventData.status,
-        country: eventData.country,
+        application: eventData.application, // MYOB Website or Node App
+        timestamp : new Date(),
+        status: eventData.status, // Error or Success
+        country: eventData.country, // AU or NZ
+        environment: self.environment, // {Name and Hostname} as {Production/Dev and endpoint}
+        endpoint: eventData.endpoint, // Actual endpoint hit
         error: {
-          errorId: eventData.errorId,
-          category: eventData.errorCategory,
-          endpoint: eventData.errorEndpoint,
-          errorCode: eventData.statusCode,
-          errorMsg: eventData.errorMessage,
-          hostname: eventData.errorHostname ||'',
-          priorityLevel: eventData.priorityLevel,
+          errorId: eventData.errorId, // HomepageError or LinkError or APIError
+          errorCode: eventData.statusCode, // HTTP Statuscode
+          errorMsg: eventData.errorMsg, // Message for error user generated
+          priorityLevel: eventData.priorityLevel, // P1 or P2 or P3
         }
       };
+      console.log('INSIDE MONITORING calling index  -  ', eventDocument)
       // Index Document
       self._index(eventDocument)
         .then(result => fulfill(result))
@@ -88,6 +73,7 @@ class MonitoringService {
   // @todo: The index function returns a promise so should just be returning that call without wrapping in a new promise and using callbacks.
   _index(doc, documentType = 'events') {
     let self = this;
+    console.log('INSIDE INDEX - ', doc)
     return new Promise((fulfill, reject) => {
       self.client.index({
         index: self.documentTypes[documentType].index, 
