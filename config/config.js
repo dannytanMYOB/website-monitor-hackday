@@ -54,7 +54,7 @@ module.exports = {
   // },
   // segmentWriteKey: 'W05RiTFjSsa9BWZj1hLAJVVc0j3C0OfR',
     monitoring: {
-      hostname: 'https://search-realtime-dollars-es-dev-wmivrh32tuyhoi7ucykbdx4coi.ap-southeast-2.es.amazonaws.com',
+      hostname: 'https://vpc-www-monitoring-dev-tw6voffxhi6oajnfwb2lbogtha.ap-southeast-2.es.amazonaws.com',
       documentTypes: {
         events: {
           index: 'website-monitoring-logs-dev',
