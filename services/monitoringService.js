@@ -21,7 +21,6 @@ class MonitoringService {
     });
 
     this.environment = {
-      ip: helpers.getHostIP(),
       name: _.get(config, 'environment', ''),
       hostname: ''
     };
@@ -34,22 +33,22 @@ class MonitoringService {
   }
 
   // Record an Error Object
-  record(eventObj, eventData) {
+  record(eventData) {
     let self = this;
     return new Promise((fulfill, reject) => {
       
       // Reject if incomplete
       // @todo: Determine better means of validation
-      if (!eventObj || !eventData) {
+      if (!eventData) {
         return reject(new Error(PARAMETER_ERROR_MESSAGE));
       }
-      if (!VALID_ERROR_CATEGORIES.includes(eventData.errorCategory)) {
-        return reject(new Error(`Error category: ${eventData.errorCategory} is not registered`));
-      }
-      let missingKeys = helpers.missingKeys(eventData, REQUIRED_ERROR_FIELDS);
-      if (missingKeys) {
-        return reject(new Error(`${missingKeys} has not been defined`));
-      }
+      // if (!VALID_ERROR_CATEGORIES.includes(eventData.errorCategory)) {
+      //   return reject(new Error(`Error category: ${eventData.errorCategory} is not registered`));
+      // }
+      // let missingKeys = helpers.missingKeys(eventData, REQUIRED_ERROR_FIELDS);
+      // if (missingKeys) {
+      //   return reject(new Error(`${missingKeys} has not been defined`));
+      // }
 
       if (eventData.hostname !== self.environment.hostname) {
         self.environment.hostname = eventData.hostname;
@@ -59,7 +58,7 @@ class MonitoringService {
       var eventDocument = {
         application: self.application,
         timestamp : new Date(), 
-        priorityLevel: eventData.priorityLevel,
+
         environment: self.environment,
         status: eventData.status,
         country: eventData.country,
@@ -67,9 +66,10 @@ class MonitoringService {
           errorId: eventData.errorId,
           category: eventData.errorCategory,
           endpoint: eventData.errorEndpoint,
-          errorCode: eventObj.statusCode,
-          errorMsg: eventObj.errorMessage,
-          hostname: eventData.errorHostname ||''
+          errorCode: eventData.statusCode,
+          errorMsg: eventData.errorMessage,
+          hostname: eventData.errorHostname ||'',
+          priorityLevel: eventData.priorityLevel,
         }
       };
       // Index Document
