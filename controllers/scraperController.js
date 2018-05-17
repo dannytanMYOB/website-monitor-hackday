@@ -1,5 +1,6 @@
 var Xray = require('x-ray');
 var x = Xray();
+const apiService = require('../services/apiService.js');
 
 // links 
 // x('https://www.myob.com/au/', ['a@href'])(function(err, links) {
@@ -51,11 +52,10 @@ var x = Xray();
 
 class Scraper {
   constructor() {
-    this.assets = {
-      links: [],
-      scripts: [],
-      images: [],
-    };
+    this.assets = {sd: 1};
+
+    this.getLinks = this.getLinks.bind(this);
+    // this.removeUndefined = this.removeUnderfined.bind(this);
   }
 
   static removeUndefined(array) {
@@ -66,27 +66,35 @@ class Scraper {
     return filteredArray;
   }
 
-  static getLinks(html) {
-    x('https://www.myob.com/au/', ['a@href'])(function(err, links) {
-      let filteredLinks = links;
+  getLinks(key, html) {
+    const promise = new Promise((resolve, reject) => {
+      x(html, ['a@href'])(function(err, links) {
+        let filteredLinks = links;
 
-      filteredLinks = this.removeUndefined(filteredLinks);
+        filteredLinks = Scraper.removeUndefined(filteredLinks);
 
-      console.log(filteredLinks);
+        filteredLinks = filteredLinks.filter(link => {
+          if (link.indexOf('http') !== -1) {
+            return true;
+          }
 
-      filteredLinks = filteredLinks.filter(link => {
-        if (link.indexOf('http') !== -1) {
-          return true;
-        }
-        return false;
+          return false;
+        });
+
+        // remove duplicates
+        filteredLinks = filteredLinks.filter((link, position) => 
+          filteredLinks.indexOf(link) === position
+        );
+        
+        console.log(filteredLinks);
+
+        // Scraper.assets[key].links = filteredLinks;
+
+        resolve(filteredLinks);
       });
-
-      // remove duplicates
-      filteredLinks = filteredLinks.filter((link, position) => 
-        filteredLinks.indexOf(link) === position
-      );  
-      
     });
+
+    return promise;
   }
 
   static getScripts(html) {
@@ -121,8 +129,28 @@ class Scraper {
   }
 }
 const example = {
-  auHomepage: 'https://www.myob.com/au',
+  auHomepage: 'htmldsfglsdfl',
   nzHomepage: 'https://www.myob.com/nz',
 }
-// const s = new Scraper();
+const s = new Scraper();
 // s.startScrape(example);
+
+// Scraper.getLinks();
+
+// console.log(apiService.checkUrl('https://www.myob.com/au').then((data) => {console.log(data)}));
+
+apiService
+  .checkUrl('https://www.myob.com/au')
+  .then((data) => {
+    const html = data.data;
+
+    
+
+    s.getLinks('auHomepage', html).then(data => {
+      s.assets.links = data;
+      console.log(s.assets);
+    });
+
+    
+  })
+  .catch((error) => { console.log('err', error) });
