@@ -86,7 +86,7 @@ class MonitoringService {
 
   // Write a document to the index
   // @todo: The index function returns a promise so should just be returning that call without wrapping in a new promise and using callbacks.
-  _index(doc, documentType = 'error') {
+  _index(doc, documentType = 'events') {
     let self = this;
     return new Promise((fulfill, reject) => {
       self.client.index({
