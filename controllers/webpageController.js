@@ -35,14 +35,11 @@ function getWebpageStatus() {
         var errorDetails = {
           errorId: 'website',
           priorityLevel: 'P1',
-          country: 'au',
+          country: `${},
           status: 'au',
           hostname: 'hostname',
           errorCategory: 'apiError',
-          errorEndpoint: 'myob.com/au'
-        };
-
-        var err = {
+          errorEndpoint: 'myob.com/au',
           statusCode: '404',
           errorMsg: 'Server unavailable',
           hostname: 'dev'
