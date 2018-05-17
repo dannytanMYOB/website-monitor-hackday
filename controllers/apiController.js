@@ -13,6 +13,10 @@ var MILES_API = 'https://www.myob.com/api/miles/profile/basic'; // - if we are g
 
 var SCREEN_SCRAPE_API = 'https://www.myob.com/api/screen-scrape/heartbeat';
 
+var CART_BUY_API = 'https://store.myob.com.au/buy/cart?productId=1-2O62VRY';
+
+var CART_TRIAL_API = 'https://store.myob.com.au/buy/trial?productId=1-3FZIC82&productLine=plus';
+
 function getAPIStatus() {
   var sites = [];
   sites.push(apiService.checkUrl(NOTIFICATION_API));
@@ -21,9 +25,11 @@ function getAPIStatus() {
   sites.push(apiService.checkUrl(UPGRADE_ENGINE_API));
   sites.push(apiService.checkUrl(MILES_API));
   sites.push(apiService.checkUrl(SCREEN_SCRAPE_API));
+  sites.push(apiService.checkUrl(CART_BUY_API));
+  sites.push(apiService.checkUrl(CART_TRIAL_API));
 
   Promise.all(sites)
-    .then(([NOTIFICATION_API_HB, SITE_SEARCH_API_HB, PARTNER_SEARCH_API_HB, UPGRADE_ENGINE_API_HB, MILES_API_HB, SCREEN_SCRAPE_API_HB]) => {
+    .then(([NOTIFICATION_API_HB, SITE_SEARCH_API_HB, PARTNER_SEARCH_API_HB, UPGRADE_ENGINE_API_HB, MILES_API_HB, SCREEN_SCRAPE_API_HB, CART_BUY_API_HB, CART_TRIAL_API_HB]) => {
       if (NOTIFICATION_API_HB.status === '200' && NOTIFICATION_API_HB.data.status === 'UP') {
         var eventDetails = {
           errorId: 'API',
@@ -245,6 +251,84 @@ function getAPIStatus() {
           hostname: 'https://www.myob.com/api/screen-scrape',
           errorCategory: 'apiError',
           errorEndpoint: 'https://www.myob.com/api/screen-scrape/heartbeat'
+        };
+
+        var err = {
+          statusCode: '404',
+          errorMsg: 'Server unavailable',
+          hostname: 'dev'
+        };
+
+        monitoringService.record(err, errorDetails)
+          .then((response) => console.log(response))
+          .catch((error) => console.error(error));
+      }
+
+      if (CART_BUY_API_HB.status === '200') {
+        var eventDetails = {
+          errorId: 'API',
+          //priorityLevel: 'P1',
+          //country: 'au',
+          status: 'UP',
+          hostname: 'https://store.myob.com.au/buy/cart',
+          //errorCategory: 'Website',
+          //errorEndpoint: 'myob.com/au'
+        };
+
+        monitoringService.record({}, eventDetails)
+          .then((response) => console.log(response))
+          .catch((error) => console.error(error));
+      } else {
+        console.log('calling elastic search');
+        // 404 - elastic search
+
+        var errorDetails = {
+          errorId: 'API',
+          priorityLevel: 'P1',
+          //country: 'au',
+          status: 'DOWN',
+          hostname: 'https://store.myob.com.au/buy/cart',
+          errorCategory: 'apiError',
+          errorEndpoint: 'https://store.myob.com.au/buy/cart?productId=1-2O62VRY'
+        };
+
+        var err = {
+          statusCode: '404',
+          errorMsg: 'Server unavailable',
+          hostname: 'dev'
+        };
+
+        monitoringService.record(err, errorDetails)
+          .then((response) => console.log(response))
+          .catch((error) => console.error(error));
+      }
+
+      if (CART_TRIAL_API_HB.status === '200') {
+        var eventDetails = {
+          errorId: 'API',
+          //priorityLevel: 'P1',
+          //country: 'au',
+          status: 'UP',
+          hostname: 'https://store.myob.com.au/buy/trial',
+          //errorCategory: 'Website',
+          //errorEndpoint: 'myob.com/au'
+        };
+
+        monitoringService.record({}, eventDetails)
+          .then((response) => console.log(response))
+          .catch((error) => console.error(error));
+      } else {
+        console.log('calling elastic search');
+        // 404 - elastic search
+
+        var errorDetails = {
+          errorId: 'API',
+          priorityLevel: 'P1',
+          //country: 'au',
+          status: 'DOWN',
+          hostname: 'https://store.myob.com.au/buy/trial',
+          errorCategory: 'apiError',
+          errorEndpoint: 'https://store.myob.com.au/buy/trial?productId=1-3FZIC82&productLine=plus'
         };
 
         var err = {
