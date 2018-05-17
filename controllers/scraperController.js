@@ -4,7 +4,7 @@ const apiService = require('../services/apiService.js');
 
 // links 
 // x('https://www.myob.com/au/', ['a@href'])(function(err, links) {
-  
+
 //   let filteredLinks = links;
 
 //   filteredLinks = Scraper.removeUndefined(filteredLinks);
@@ -21,7 +21,7 @@ const apiService = require('../services/apiService.js');
 //   filteredLinks = filteredLinks.filter((link, position) => 
 //     filteredLinks.indexOf(link) === position
 //   );  
-  
+
 // });
 
 // // scripts
@@ -31,12 +31,12 @@ const apiService = require('../services/apiService.js');
 //   let filteredScripts = scripts;
 
 //   filteredScripts = filteredScripts.filter(script => script);
-  
+
 // });
 
 // // images
 // x('https://www.myob.com/au/', ['img@data-interchange'])(function(err, images) {
-  
+
 //   let filteredImages = images;
 
 //   filteredImages = filteredImages.filter(image => image);
@@ -52,7 +52,9 @@ const apiService = require('../services/apiService.js');
 
 class Scraper {
   constructor() {
-    this.assets = {sd: 1};
+    this.assets = {
+      sd: 1
+    };
 
     this.getLinks = this.getLinks.bind(this);
     // this.removeUndefined = this.removeUnderfined.bind(this);
@@ -68,7 +70,7 @@ class Scraper {
 
   getLinks(key, html) {
     const promise = new Promise((resolve, reject) => {
-      x(html, ['a@href'])(function(err, links) {
+      x(html, ['a@href'])(function (err, links) {
         let filteredLinks = links;
 
         filteredLinks = Scraper.removeUndefined(filteredLinks);
@@ -82,11 +84,9 @@ class Scraper {
         });
 
         // remove duplicates
-        filteredLinks = filteredLinks.filter((link, position) => 
+        filteredLinks = filteredLinks.filter((link, position) =>
           filteredLinks.indexOf(link) === position
         );
-        
-        console.log(filteredLinks);
 
         // Scraper.assets[key].links = filteredLinks;
 
@@ -99,34 +99,41 @@ class Scraper {
 
   getScripts(key, html) {
     const promise = new Promise((resolve, reject) => {
-      x(html, ['script@src'])(function(err, scripts) {
+      x(html, ['script@src'])(function (err, scripts) {
 
         let filteredScripts = scripts;
 
         filteredScripts = Scraper.removeUndefined(filteredScripts);
         resolve(filteredScripts);
-        
+
       });
     });
     return promise;
   }
 
-  static getImages(html) {
-    x('https://www.myob.com/au/', ['img@data-interchange'])(function(err, images) {
-  
-      let filteredImages = images;
+  getImages(key, html) {
+    const promise = new Promise((resolve, reject) => {
 
-      filteredImages = this.removeUndefined(filteredImages);
+      x(html, ['img@data-interchange'])(function (err, images) {
 
-      filteredImages.forEach((image, index, array) => {
-        array[index] = `https://www.myob.com/${image.match(/\,(.*)\]/).pop().trim()}`;
+        let filteredImages = images;
+
+        filteredImages = Scraper.removeUndefined(filteredImages);
+
+        filteredImages.forEach((image, index, array) => {
+          array[index] = `https://www.myob.com/${image.match(/\,(.*)\]/).pop().trim()}`;
+        });
+        resolve(filteredImages);
+
       });
 
     });
+
+    return promise;
   }
 
   startScrape(pages) {
-    Object.keys(pages).forEach(function(key, index) {
+    Object.keys(pages).forEach(function (key, index) {
       console.log('key', key);
       console.log('pages', pages[key]);
     });
@@ -150,16 +157,29 @@ apiService
 
 
     s.getLinks('auHomepage', html).then(data => {
-      s.assets.links = data;
-      // console.log(s.assets);
-      s.getScripts('auHomepage', html).then(data => {
-        s.assets.scripts = data;
-      console.log(s.assets);
-      })
-      .catch((error) => { console.log('err', error) });
-      
-    });
+        s.assets.links = data;
 
-    
+        s.getScripts('auHomepage', html).then(data => {
+            s.assets.scripts = data;
+
+            s.getImages('auHomepage', html).then(data => {
+              s.assets.images = data;
+              console.log(s.assets)
+            })
+            .catch((error) => {
+              console.log('err', error)
+            });
+          })
+          .catch((error) => {
+            console.log('err', error)
+          });
+      })
+      .catch((error) => {
+        console.log('err', error)
+      });
+
+
   })
-  .catch((error) => { console.log('err', error) });
+  .catch((error) => {
+    console.log('err', error)
+  });
