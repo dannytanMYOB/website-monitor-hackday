@@ -4,7 +4,6 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var axios = require('axios');
 
 
 var index = require('./routes/index');
@@ -12,18 +11,7 @@ var users = require('./routes/users');
 
 var app = express();
 
-axios.get('https://www.myob.com/au')
-    .then(response => {
-        // console.log(response.data.url);
-        console.log(response.data);
-        // x(response.data, 'body', 'svg')(function(err, svg) {
-        //     svg // => Pear
-        //     console.log(svg)
-        // })
-    })
-    .catch(error => {
-        console.log(error);
-    });
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
