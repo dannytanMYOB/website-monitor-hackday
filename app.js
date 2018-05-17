@@ -8,10 +8,37 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var apiService = require('./services/apiService')
 
 var app = express();
 
+var AU_URL = ''
+var NZ_URL = ''
 
+// call the scraping service after the initial call
+function getPageLinks(){
+    var sites = []
+    sites.push(apiService.checkUrl(AU_URL))
+    sites.push(apiService.checkUrl(NZ_URL))
+
+    Promise.all(sites)
+        .then(([auHTML, nzHTML]) => {
+            if(auHTML.data) {
+                return scrapingService.scrape({auHTML, nzHTML})
+            } else {
+                // 404 - elastic search
+            }
+    }).then(({auHTML: {}, nzHTML: {}}) => {
+        forEach(auHTML.links, (link) => {
+            apiService.checkUrl
+        })
+    })
+}
+
+// call inpage links to check if they are active
+function checkUrls() {
+
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
