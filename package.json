@@ -18,9 +18,7 @@
     "pug": "2.0.0-beta11",
     "serve-favicon": "~2.4.5",
     "uuid": "^3.2.1",
-    "x-ray": "^2.3.2"
-    "nodemon": "^1.17.4",
-    "pug": "2.0.0-beta11",
-    "serve-favicon": "~2.4.5"
+    "x-ray": "^2.3.2",
+    "nodemon": "^1.17.4"
   }
 }
