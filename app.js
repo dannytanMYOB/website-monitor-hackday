@@ -8,36 +8,40 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var apiService = require('./services/apiService')
+var apiService = require('./services/apiService');
 
 var app = express();
 
-var AU_URL = ''
-var NZ_URL = ''
+var AU_URL = 'https://www.myob.com/au'
+var NZ_URL = 'https://www.myob.com/nz'
 
 // call the scraping service after the initial call
-function getPageLinks(){
-    var sites = []
-    sites.push(apiService.checkUrl(AU_URL))
-    sites.push(apiService.checkUrl(NZ_URL))
+getPageLinks();
 
-    Promise.all(sites)
-        .then(([auHTML, nzHTML]) => {
-            if(auHTML.data) {
-                return scrapingService.scrape({auHTML, nzHTML})
-            } else {
-                // 404 - elastic search
-            }
-    }).then(({auHTML: {}, nzHTML: {}}) => {
-        forEach(auHTML.links, (link) => {
-            apiService.checkUrl
-        })
+
+function getPageLinks() {
+  var sites = []
+  sites.push(apiService.checkUrl(AU_URL))
+  sites.push(apiService.checkUrl(NZ_URL))
+
+  Promise.all(sites)
+    .then(([auHTML, nzHTML]) => {
+      if (auHTML.data) {
+        //return scrapingService.scrape({auHTML, nzHTML})
+        console.log('call scrapers');
+
+      } else {
+        console.log('calling elastic search');
+        // 404 - elastic search
+      }
+    }).then(() => {
+      var auHTML = {
+        links: ['au']
+      }
+      auHTML.links.forEach((link) => {
+        apiService.checkUrl(link);
+      })
     })
-}
-
-// call inpage links to check if they are active
-function checkUrls() {
-
 }
 
 // view engine setup
@@ -48,7 +52,9 @@ app.set('view engine', 'pug');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -56,14 +62,14 @@ app.use('/', index);
 app.use('/users', users);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

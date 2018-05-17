@@ -1,7 +1,6 @@
 var axios = require('axios');
 
 
-
 function checkUrl(url) {
 	return axios.get(url)
 		.then(response => {
@@ -20,4 +19,10 @@ function checkUrl(url) {
 
 function checkStatus() {
 
+}
+
+
+module.exports = {
+	checkUrl,
+	checkStatus
 }
