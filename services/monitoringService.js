@@ -2,8 +2,8 @@ var _                     = require('lodash');
 var uuidV4                = require('uuid/v4');
 var elasticsearch         = require('elasticsearch');
 var path                  = require('path');
-var config                = require(path.resolve('app/config/env'));
-var helpers               = require(path.resolve('app/utils/helpers'));
+var config                = require(path.resolve('services/config'));
+var helpers               = require(path.resolve('helpers/helpers'));
 
 
 // Constants
