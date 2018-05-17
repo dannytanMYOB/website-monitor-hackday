@@ -97,14 +97,18 @@ class Scraper {
     return promise;
   }
 
-  static getScripts(html) {
-    x('https://www.myob.com/au/', ['script@src'])(function(err, scripts) {
+  getScripts(key, html) {
+    const promise = new Promise((resolve, reject) => {
+      x(html, ['script@src'])(function(err, scripts) {
 
-      let filteredScripts = scripts;
+        let filteredScripts = scripts;
 
-      filteredScripts = this.removeUndefined(filteredScripts);
-      
+        filteredScripts = Scraper.removeUndefined(filteredScripts);
+        resolve(filteredScripts);
+        
+      });
     });
+    return promise;
   }
 
   static getImages(html) {
@@ -144,11 +148,16 @@ apiService
   .then((data) => {
     const html = data.data;
 
-    
 
     s.getLinks('auHomepage', html).then(data => {
       s.assets.links = data;
+      // console.log(s.assets);
+      s.getScripts('auHomepage', html).then(data => {
+        s.assets.scripts = data;
       console.log(s.assets);
+      })
+      .catch((error) => { console.log('err', error) });
+      
     });
 
     
