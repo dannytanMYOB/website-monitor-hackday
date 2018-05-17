@@ -33,6 +33,17 @@ function getPageLinks() {
       } else {
         console.log('calling elastic search');
         // 404 - elastic search
+        //call record method of montiorimg service 
+        // error category => website 
+        // host name 
+        // priority level P1
+        // status failure 
+        // country 
+        // error endpoint pass host name 
+        // status code 404
+        //error message 
+        // error hostname 
+        
       }
     }).then(() => {
       var auHTML = {
