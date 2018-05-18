@@ -7,7 +7,7 @@ function getCountry(url) {
 }
 
 function getHost(url){
-//console.log(url)
+console.log('host',url)
 	var urlMetadata = url.split('/');
 	//console.log('url', urlMetadata)
 	//console.log(urlMetadata);

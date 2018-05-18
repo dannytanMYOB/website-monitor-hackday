@@ -22,11 +22,12 @@ function getErrorPayload(site) {
 
 
 function getSuccessPayload(site) {
+    console.log('site',site)
     return {
         application: 'website',
-        country: `${helpers.getCountry(site.url)}`,
+        country: `${helpers.getCountry(site)}`,
         status: 'Success',
-        hostname: `${helpers.getHost(url)}`,
+        hostname: `${helpers.getHost(site)}`,
         endpoint: url,
         statusCode: 200,
     };

@@ -15,13 +15,20 @@ function getWebpageStatus() {
       .then((sites) => {
           sites.forEach((site) => {
               console.log(site.url)
-              if (site.status === 200) {
+              if (parseInt(site.status) === 200) {
                 console.log('callling scrapers');
-                var Scraper = new scraperService();
-                Scraper.startScrape(site.data)
-                    .then((scrapedData) => {
-                        console.log('scrapedData: ', scrapedData)
-                    })
+               // var Scraper = new scraperService();
+                var successDetails = elasticSearchPayloadBuilder.getSuccessPayload(site.url);
+
+                monitoringService.record(successDetails)
+                .then((response) => console.log(response))
+                .catch((error) => console.error(error));
+            
+                
+                // Scraper.startScrape(site.data)
+                //     .then((scrapedData) => {
+                //         console.log('scrapedData: ', scrapedData)
+                //     })
 
         // Form Document
           // var eventDetails = {

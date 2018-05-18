@@ -33,6 +33,7 @@ class MonitoringService {
       
       // Reject if incomplete
       // @todo: Determine better means of validation
+      console.log(eventData);
       if (!eventData) {
         return reject(new Error(PARAMETER_ERROR_MESSAGE));
       }
