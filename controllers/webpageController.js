@@ -1,7 +1,6 @@
 var apiService = require('../services/apiService');
 var monitoringService = require('../services/monitoringService');
-
-var helpers = require('../helpers/urlParser');
+var elasticSearchPayloadBuilder = require('../helpers/elasticSearchPayloadBuilder');
 
 var AU_URL = 'https://www.myob.com/au';
 var NZ_URL = 'https://www.myob.com/nz';
@@ -36,7 +35,11 @@ function getWebpageStatus() {
           console.log('calling elastic search');
           // 404 - elastic search
 
-          var errorDetails = {
+
+
+          var errorDetails = elasticSearchPayloadBuilder.getErrorPayload(site);
+          
+          {
             errorId: 'website',
             priorityLevel: 'P1',
             country: `${helpers.getCountry(site.url)}`,
