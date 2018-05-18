@@ -4,27 +4,16 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var moment = require('moment')
 
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var webpageController = require('./controllers/webpageController');
-var timeCalculators = require('./helpers/timeCalculators');
+var healthCheckService = require('./services/healthCheckService');
 
 var app = express();
 
-// call the scraping service after the initial call
-function performHealthCheck() {
-    console.info('Performing heath check...', moment().format('MMMM Do YYYY, h:mm:ss a'))
-    setTimeout(() => {
-        webpageController.getWebpageStatus();
-        performHealthCheck()
-    }, timeCalculators.getMinutesInMiliseconds(0.5))
-}
+healthCheckService.performHealthCheck()
 
-webpageController.getWebpageStatus();
-performHealthCheck()
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

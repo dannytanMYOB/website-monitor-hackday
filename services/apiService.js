@@ -1,6 +1,5 @@
 var axios = require('axios');
 
-
 function checkUrl(url) {
 	return axios.get(url)
 		.then(response => {
