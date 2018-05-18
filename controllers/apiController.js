@@ -41,7 +41,7 @@ function getAPIStatus() {
           //errorEndpoint: 'myob.com/au'
         };
 
-        monitoringService.record({}, eventDetails)
+        monitoringService.record(eventDetails)
           .then((response) => console.log(response))
           .catch((error) => console.error(error));
       } else {
@@ -55,16 +55,12 @@ function getAPIStatus() {
           status: 'DOWN',
           hostname: 'https://www.myob.com/api/notification',
           errorCategory: 'apiError',
-          errorEndpoint: 'https://www.myob.com/api/notification/heartbeat'
-        };
-
-        var err = {
+          errorEndpoint: 'https://www.myob.com/api/notification/heartbeat',
           statusCode: '404',
-          errorMsg: 'Server unavailable',
-          hostname: 'dev'
+          errorMsg: 'Server unavailable'
         };
 
-        monitoringService.record(err, errorDetails)
+        monitoringService.record(errorDetails)
           .then((response) => console.log(response))
           .catch((error) => console.error(error));
       }

@@ -39,15 +39,17 @@ function getWebpageStatus() {
           var errorDetails = {
             errorId: 'website',
             priorityLevel: 'P1',
-            country: `${helpers.getCountry(site.ur)}`,
+            country: `${helpers.getCountry(site.url)}`,
             status: 'au',
-            hostname: 'hostname',
+           // hostname: `${}`,
             errorCategory: 'apiError',
             errorEndpoint: 'myob.com/au',
             statusCode: '404',
             errorMsg: 'Server unavailable',
             hostname: 'dev'
           };
+
+          
 
           monitoringService.record(err, errorDetails)
             .then((response) => console.log(response))
