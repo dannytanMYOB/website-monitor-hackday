@@ -1,5 +1,5 @@
-var apiService = require('./services/apiService');
-var monitoringService = require('./services/monitoringService');
+var apiService = require('../services/apiService');
+var monitoringService = require('../services/monitoringService');
 
 var AU_URL = 'https://www.myob.com/au';
 var NZ_URL = 'https://www.myob.com/nz';
@@ -35,7 +35,7 @@ function getWebpageStatus() {
         var errorDetails = {
           errorId: 'website',
           priorityLevel: 'P1',
-          country: `${},
+          country: `au`,
           status: 'au',
           hostname: 'hostname',
           errorCategory: 'apiError',

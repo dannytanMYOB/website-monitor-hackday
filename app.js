@@ -4,22 +4,26 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var moment = require('moment')
 
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var apiService = require('./services/apiService');
-var monitoringService = require('./services/monitoringService');
 var webpageController = require('./controllers/webpageController');
+var timeCalculators = require('./helpers/timeCalculators');
 
 var app = express();
 
-var AU_URL = 'https://www.myob.com/au'
-var NZ_URL = 'https://www.myob.com/nz'
-
 // call the scraping service after the initial call
-webpageController.getWebpageStatus();
+function performHealthCheck() {
+    console.info('Performing heath check...', moment().format('MMMM Do YYYY, h:mm:ss a'))
+    setTimeout(() => {
+        webpageController.getWebpageStatus();
+        performHealthCheck()
+    }, timeCalculators.getMinutesInMiliseconds(5))
+}
 
+performHealthCheck()
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
