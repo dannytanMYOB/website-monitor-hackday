@@ -37,20 +37,20 @@ function getWebpageStatus() {
 
 
 
-          var errorDetails = elasticSearchPayloadBuilder.getErrorPayload(site);
+          var errorDetails = elasticSearchPayloadBuilder.getErrorPayload(site.url);
           
-          {
-            errorId: 'website',
-            priorityLevel: 'P1',
-            country: `${helpers.getCountry(site.url)}`,
-            status: 'au',
-           // hostname: `${}`,
-            errorCategory: 'apiError',
-            errorEndpoint: 'myob.com/au',
-            statusCode: '404',
-            errorMsg: 'Server unavailable',
-            hostname: 'dev'
-          };
+          // {
+          //   errorId: 'website',
+          //   priorityLevel: 'P1',
+          //   country: `${helpers.getCountry(site.url)}`,
+          //   status: 'au',
+          //  // hostname: `${}`,
+          //   errorCategory: 'apiError',
+          //   errorEndpoint: 'myob.com/au',
+          //   statusCode: '404',
+          //   errorMsg: 'Server unavailable',
+          //   hostname: 'dev'
+          // };
 
           
 

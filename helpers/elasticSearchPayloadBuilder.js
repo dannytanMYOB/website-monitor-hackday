@@ -1,15 +1,13 @@
 var helpers = require('./urlParser');
 
 function getErrorPayload (site) {
-
+    console.log('website', helpers.getHost(site));
     return {
         application: 'website',
         priorityLevel: 'P1',
         country: `${helpers.getCountry(site.url)}`,
         status: 'Error',
         hostname: `${helpers.getHost(url)}`,
-        errorCategory: 'apiError',
-        errorEndpoint: 'myob.com/au',
         endpoint: 'myob.com/au',
         statusCode: '404',
         environmentHostname: 'https://www.myob.com', // {Name and Hostname} as {Production/Dev and endpoint}

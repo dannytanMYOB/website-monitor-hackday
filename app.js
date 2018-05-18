@@ -12,7 +12,7 @@ var healthCheckService = require('./services/healthCheckService');
 
 var app = express();
 
-healthCheckService.performHealthCheck()
+healthCheckService.performHealthCheck();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
