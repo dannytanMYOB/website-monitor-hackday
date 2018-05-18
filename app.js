@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var apiService = require('./services/apiService');
+
 var monitoringService = require('./services/monitoringService');
 var webpageController = require('./controllers/webpageController');
 
