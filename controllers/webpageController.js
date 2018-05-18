@@ -17,8 +17,9 @@ function getWebpageStatus() {
               console.log(site.url)
               if (site.status === '200') {
         console.log('callling scrapers');
-        // return scraperService.scrape(site.data)
+        var scrapedData =  scraperService.scrape(site.data)
 
+                  console.log('scrapedData: ', scrapedData)
 
         // Form Document
           // var eventDetails = {
@@ -42,18 +43,18 @@ function getWebpageStatus() {
 
           var errorDetails = elasticSearchPayloadBuilder.getErrorPayload(site);
 
-          {
-            errorId: 'website',
-            priorityLevel: 'P1',
-            country: `${helpers.getCountry(site.url)}`,
-            status: 'au',
-           // hostname: `${}`,
-            errorCategory: 'apiError',
-            errorEndpoint: 'myob.com/au',
-            statusCode: '404',
-            errorMsg: 'Server unavailable',
-            hostname: 'dev'
-          };
+          // {
+          //   errorId: 'website',
+          //   priorityLevel: 'P1',
+          //   country: `${helpers.getCountry(site.url)}`,
+          //   status: 'au',
+          //  // hostname: `${}`,
+          //   errorCategory: 'apiError',
+          //   errorEndpoint: 'myob.com/au',
+          //   statusCode: '404',
+          //   errorMsg: 'Server unavailable',
+          //   hostname: 'dev'
+          // };
 
 
 
