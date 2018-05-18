@@ -29,7 +29,7 @@ function getAPIStatus() {
   sites.push(apiService.checkUrl(CART_TRIAL_API));
 
   Promise.all(sites)
-    .then(([NOTIFICATION_API_HB, SITE_SEARCH_API_HB, PARTNER_SEARCH_API_HB, UPGRADE_ENGINE_API_HB, MILES_API_HB, SCREEN_SCRAPE_API_HB, CART_BUY_API_HB, CART_TRIAL_API_HB]) => {
+    .then(([NOTIFICATION_API_HB, SITE_SEARCH_API_HB, PARTNER_SEARCH_API_HB, UPGRADE_ENGINE_API_HB, SCREEN_SCRAPE_API_HB, CART_BUY_API_HB, CART_TRIAL_API_HB]) => {
       if (NOTIFICATION_API_HB.status === 200 && NOTIFICATION_API_HB.data.status === 'UP') {
         var eventDocument = {
           application: 'notification', // MYOB Website or Node App
@@ -155,37 +155,37 @@ function getAPIStatus() {
           .catch((error) => console.error(error));
       }
 
-      if (MILES_API_HB.status === 200 && MILES_API_HB.data.status === 'UP') {
-        var eventDocument = {
-          application: 'miles', // MYOB Website or Node App
-          category: 'API',
-          status: 'UP', // Error or Success
-          //country: 'AU', // AU or NZ
-          environmentHostname: 'https://www.myob.com/api/miles', // {Name and Hostname} as {Production/Dev and endpoint}
-          endpoint: 'https://www.myob.com/api/miles/heartbeat' // Actual endpoint hit
-        };
-
-        monitoringService.record(eventDocument)
-          .then((response) => console.log(response))
-          .catch((error) => console.error(error));
-      } else {
-        // 404 - elastic search
-        var errorDetails = {
-          application: 'miles',
-          category: 'API',
-          priorityLevel: 'P1',
-          //country: 'au',
-          status: 'error',
-          endpoint: 'https://www.myob.com/api/miles/heartbeat',
-          statusCode: '404',
-          errorMsg: 'Server unavailable',
-          environmentHostname: 'https://www.myob.com/api/miles', // {Name and Hostname} as {Production/Dev and endpoint}
-        };
-
-        monitoringService.record(errorDetails)
-          .then((response) => console.log(response))
-          .catch((error) => console.error(error));
-      }
+      // if (MILES_API_HB.status === 200 && MILES_API_HB.data.status === 'UP') {
+      //   var eventDocument = {
+      //     application: 'miles', // MYOB Website or Node App
+      //     category: 'API',
+      //     status: 'UP', // Error or Success
+      //     //country: 'AU', // AU or NZ
+      //     environmentHostname: 'https://www.myob.com/api/miles', // {Name and Hostname} as {Production/Dev and endpoint}
+      //     endpoint: 'https://www.myob.com/api/miles/heartbeat' // Actual endpoint hit
+      //   };
+      //
+      //   monitoringService.record(eventDocument)
+      //     .then((response) => console.log(response))
+      //     .catch((error) => console.error(error));
+      // } else {
+      //   // 404 - elastic search
+      //   var errorDetails = {
+      //     application: 'miles',
+      //     category: 'API',
+      //     priorityLevel: 'P1',
+      //     //country: 'au',
+      //     status: 'error',
+      //     endpoint: 'https://www.myob.com/api/miles/heartbeat',
+      //     statusCode: '404',
+      //     errorMsg: 'Server unavailable',
+      //     environmentHostname: 'https://www.myob.com/api/miles', // {Name and Hostname} as {Production/Dev and endpoint}
+      //   };
+      //
+      //   monitoringService.record(errorDetails)
+      //     .then((response) => console.log(response))
+      //     .catch((error) => console.error(error));
+      // }
 
       if (SCREEN_SCRAPE_API_HB.status === 200 && SCREEN_SCRAPE_API_HB.data.status === 'UP') {
         var eventDocument = {
