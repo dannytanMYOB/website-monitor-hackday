@@ -23,7 +23,7 @@ function getAPIStatus() {
   sites.push(apiService.checkUrl(SITE_SEARCH_API));
   sites.push(apiService.checkUrl(PARTNER_SEARCH_API));
   sites.push(apiService.checkUrl(UPGRADE_ENGINE_API));
-  sites.push(apiService.checkUrl(MILES_API));
+  //sites.push(apiService.checkUrl(MILES_API));
   sites.push(apiService.checkUrl(SCREEN_SCRAPE_API));
   sites.push(apiService.checkUrl(CART_BUY_API));
   sites.push(apiService.checkUrl(CART_TRIAL_API));
@@ -44,7 +44,6 @@ function getAPIStatus() {
           .then((response) => console.log(response))
           .catch((error) => console.error(error));
       } else {
-        console.log('calling elastic search');
         // 404 - elastic search
         var errorDetails = {
           application: 'notification',
@@ -76,7 +75,6 @@ function getAPIStatus() {
           .then((response) => console.log(response))
           .catch((error) => console.error(error));
       } else {
-        console.log('calling elastic search');
         // 404 - elastic search
         var errorDetails = {
           application: 'site-search',
@@ -109,7 +107,6 @@ function getAPIStatus() {
           .then((response) => console.log(response))
           .catch((error) => console.error(error));
       } else {
-        console.log('calling elastic search');
         // 404 - elastic search
         var errorDetails = {
           application: 'partner-search',
@@ -141,7 +138,6 @@ function getAPIStatus() {
           .then((response) => console.log(response))
           .catch((error) => console.error(error));
       } else {
-        console.log('calling elastic search');
         // 404 - elastic search
         var errorDetails = {
           application: 'upgrade-engine',
@@ -173,7 +169,6 @@ function getAPIStatus() {
           .then((response) => console.log(response))
           .catch((error) => console.error(error));
       } else {
-        console.log('calling elastic search');
         // 404 - elastic search
         var errorDetails = {
           application: 'miles',
@@ -206,7 +201,6 @@ function getAPIStatus() {
           .then((response) => console.log(response))
           .catch((error) => console.error(error));
       } else {
-        console.log('calling elastic search');
         // 404 - elastic search
         var errorDetails = {
           application: 'screen-scrape',
@@ -239,7 +233,6 @@ function getAPIStatus() {
           .then((response) => console.log(response))
           .catch((error) => console.error(error));
       } else {
-        console.log('calling elastic search');
         // 404 - elastic search
         var errorDetails = {
           application: 'cart',
@@ -272,7 +265,6 @@ function getAPIStatus() {
           .then((response) => console.log(response))
           .catch((error) => console.error(error));
       } else {
-        console.log('calling elastic search');
         // 404 - elastic search
         var errorDetails = {
           application: 'cart',

@@ -1,6 +1,7 @@
 var moment = require('moment')
 var timeCalculators = require('../helpers/timeCalculators');
 var WebPageController = require('./webpageController');
+var apiController = require('./apiController');
 
 class healthCheckController {
     constructor () {
@@ -11,14 +12,16 @@ class healthCheckController {
         console.info('Performing heath check...', moment().format('MMMM Do YYYY, h:mm:ss a'));
         setTimeout(() => {
             this.WebpageController.getWebpageStatus();
+            apiController.getAPIStatus();
             this.recursiveHealthCheck()
-        }, timeCalculators.getMinutesInMilliseconds(1))
+        }, timeCalculators.getMinutesInMilliseconds(5))
     }
 
     performHealthCheck () {
         this.WebpageController.getWebpageStatus();
+        apiController.getAPIStatus();
         this.recursiveHealthCheck()
     }
 }
 
-module.exports = healthCheckController
+module.exports = healthCheckController;
