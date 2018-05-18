@@ -2,62 +2,9 @@ var Xray = require('x-ray');
 var x = Xray();
 const apiService = require('../services/apiService.js');
 
-// links 
-// x('https://www.myob.com/au/', ['a@href'])(function(err, links) {
-
-//   let filteredLinks = links;
-
-//   filteredLinks = Scraper.removeUndefined(filteredLinks);
-
-//   console.log(filteredLinks);
-
-//   filteredLinks = filteredLinks.filter(link => {
-//     if (link.indexOf('http') !== -1) {
-//       return true;
-//     }
-//     return false;
-//   });
-//   // remove duplicates
-//   filteredLinks = filteredLinks.filter((link, position) => 
-//     filteredLinks.indexOf(link) === position
-//   );  
-
-// });
-
-// // scripts
-// x('https://www.myob.com/au/', ['script@src'])(function(err, scripts) {
-
-// // console.log(scripts);
-//   let filteredScripts = scripts;
-
-//   filteredScripts = filteredScripts.filter(script => script);
-
-// });
-
-// // images
-// x('https://www.myob.com/au/', ['img@data-interchange'])(function(err, images) {
-
-//   let filteredImages = images;
-
-//   filteredImages = filteredImages.filter(image => image);
-
-//   filteredImages.forEach((image, index, array) => {
-//     array[index] = `https://www.myob.com/${image.match(/\,(.*)\]/).pop().trim()}`;
-//   });
-
-//   console.log(filteredImages);
-
-// });
-
-
 class Scraper {
   constructor() {
-    this.assets = {
-      sd: 1
-    };
-
-    this.getLinks = this.getLinks.bind(this);
-    // this.removeUndefined = this.removeUnderfined.bind(this);
+   
   }
 
   static removeUndefined(array) {
@@ -68,9 +15,13 @@ class Scraper {
     return filteredArray;
   }
 
-  getLinks(key, html) {
+  getLinks(html) {
     const promise = new Promise((resolve, reject) => {
       x(html, ['a@href'])(function (err, links) {
+        const linksObject = {
+          links: [],
+        };
+
         let filteredLinks = links;
 
         filteredLinks = Scraper.removeUndefined(filteredLinks);
@@ -88,43 +39,66 @@ class Scraper {
           filteredLinks.indexOf(link) === position
         );
 
-        // Scraper.assets[key].links = filteredLinks;
+        linksObject.links = filteredLinks;
 
-        resolve(filteredLinks);
+        resolve(linksObject);
       });
     });
 
     return promise;
   }
 
-  getScripts(key, html) {
+  getScripts(html) {
     const promise = new Promise((resolve, reject) => {
       x(html, ['script@src'])(function (err, scripts) {
+        const scriptsObject = {
+          scripts: [],
+        };
 
         let filteredScripts = scripts;
 
         filteredScripts = Scraper.removeUndefined(filteredScripts);
-        resolve(filteredScripts);
+
+        filteredScripts.forEach((script, index, array) => {
+          if (script.indexOf('https://') === -1 && script.indexOf('http://') === -1) {
+            if(script.substring(0,2) === '//') {
+              array[index] = `https:${script}`;
+            } else {
+              array[index] = `https://www.myob.com${script}`;
+            }
+          }
+
+        });
+
+        scriptsObject.scripts = filteredScripts;
+
+        resolve(scriptsObject);
 
       });
     });
     return promise;
   }
 
-  getImages(key, html) {
+  getImages(html) {
     const promise = new Promise((resolve, reject) => {
 
       x(html, ['img@data-interchange'])(function (err, images) {
+
+        const imagesObject = {
+          images: [],
+        };
 
         let filteredImages = images;
 
         filteredImages = Scraper.removeUndefined(filteredImages);
 
         filteredImages.forEach((image, index, array) => {
-          array[index] = `https://www.myob.com/${image.match(/\,(.*)\]/).pop().trim()}`;
+          array[index] = `https://www.myob.com${image.match(/\,(.*)\]/).pop().trim()}`;
         });
-        resolve(filteredImages);
 
+        imagesObject.images = filteredImages;
+        
+        resolve(imagesObject);
       });
 
     });
@@ -132,52 +106,38 @@ class Scraper {
     return promise;
   }
 
-  startScrape(pages) {
-    Object.keys(pages).forEach(function (key, index) {
-      console.log('key', key);
-      console.log('pages', pages[key]);
+  startScrape(html) {
+    const promise = new Promise((resolve, reject) => {
+      Promise.all([this.getLinks(html), this.getScripts(html), this.getImages(html)])
+      .then(data => {
+        const assets = {};
+
+        data.forEach((item, index, array) => {
+          Object.assign(assets, item);
+        });
+
+        resolve(assets);
+      })
+      .catch((error) => {
+        reject(error);
+      });
     });
+
+    return promise;
   }
 }
-const example = {
-  auHomepage: 'htmldsfglsdfl',
-  nzHomepage: 'https://www.myob.com/nz',
-}
+
 const s = new Scraper();
-// s.startScrape(example);
 
-// Scraper.getLinks();
-
-// console.log(apiService.checkUrl('https://www.myob.com/au').then((data) => {console.log(data)}));
 
 apiService
-  .checkUrl('https://www.myob.com/au')
+  .checkUrl('https://www.myob.com/au/')
   .then((data) => {
     const html = data.data;
 
-
-    s.getLinks('auHomepage', html).then(data => {
-        s.assets.links = data;
-
-        s.getScripts('auHomepage', html).then(data => {
-            s.assets.scripts = data;
-
-            s.getImages('auHomepage', html).then(data => {
-              s.assets.images = data;
-              console.log(s.assets)
-            })
-            .catch((error) => {
-              console.log('err', error)
-            });
-          })
-          .catch((error) => {
-            console.log('err', error)
-          });
-      })
-      .catch((error) => {
-        console.log('err', error)
-      });
-
+    s.startScrape(html).then(data => {
+      console.log(data);
+    });
 
   })
   .catch((error) => {
