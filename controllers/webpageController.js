@@ -1,5 +1,6 @@
 var apiService = require('../services/apiService');
 var monitoringService = require('../services/monitoringService');
+var scraperService = require('../services/scraperService');
 var elasticSearchPayloadBuilder = require('../helpers/elasticSearchPayloadBuilder');
 
 var AU_URL = 'https://www.myob.com/au';
@@ -15,7 +16,7 @@ function getWebpageStatus() {
       console.log('AU HTML RESPONSE ', auHTML.status);
       console.log('NZ HTML RESPONSE ', nzHTML.status);
       if (auHTML.status === 200){
-        //return scrapingService.scrape({auHTML, nzHTML})
+        // return scraperService.scrape(auHTML)
         console.log('call scrapers');
         // Form Document
         var eventDocument = {
