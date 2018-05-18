@@ -7,19 +7,21 @@ var AU_URL = 'https://www.myob.com/au';
 var NZ_URL = 'https://www.myob.com/nz';
 
 function getWebpageStatus() {
-  var sites = []
-  sites.push(apiService.checkUrl(AU_URL))
-  sites.push(apiService.checkUrl(NZ_URL))
+  var sites = [];
+  sites.push(apiService.checkUrl(AU_URL));
+  sites.push(apiService.checkUrl(NZ_URL));
 
   Promise.all(sites)
       .then((sites) => {
           sites.forEach((site) => {
               console.log(site.url)
-              if (site.status === '200') {
-        console.log('callling scrapers');
-        var scrapedData =  scraperService.scrape(site.data)
-
-                  console.log('scrapedData: ', scrapedData)
+              if (site.status === 200) {
+                console.log('callling scrapers');
+                var Scraper = new scraperService();
+                Scraper.startScrape(site.data)
+                    .then((scrapedData) => {
+                        console.log('scrapedData: ', scrapedData)
+                    })
 
         // Form Document
           // var eventDetails = {
