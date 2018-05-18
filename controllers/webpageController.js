@@ -12,42 +12,65 @@ function getWebpageStatus() {
   sites.push(apiService.checkUrl(NZ_URL))
 
   Promise.all(sites)
-    .then(([auHTML, nzHTML]) => {
-      console.log('AU HTML RESPONSE ', auHTML.status);
-      console.log('NZ HTML RESPONSE ', nzHTML.status);
-      if (auHTML.status === 200){
-        // return scraperService.scrape(auHTML)
-        console.log('call scrapers');
+      .then((sites) => {
+          sites.forEach((site) => {
+              console.log(site.url)
+              if (site.status === '200') {
+        console.log('callling scrapers');
+        // return scraperService.scrape(site.data)
+
+
         // Form Document
-        var eventDocument = {
-          application: 'website', // MYOB Website or Node App
-          status: 'success', // Error or Success
-          country: 'AU', // AU or NZ
-          environmentHostname: 'https://www.myob.com', // {Name and Hostname} as {Production/Dev and endpoint}
-          endpoint: 'https://www.myob.com/au' // Actual endpoint hit
-        };
+          // var eventDetails = {
+          //   errorId: 'website',
+          //   priorityLevel: 'P1',
+          //   country: 'au',
+          //   status: 'au',
+          //   hostname: 'hostname',
+          //   errorCategory: 'Website',
+          //   errorEndpoint: 'myob.com/au'
+          // };
+          //
+          // monitoringService.record({}, eventDetails)
+          //   .then((response) => console.log(response))
+          //   .catch((error) => console.error(error));
+        } else {
+          console.log('calling elastic search');
+          // 404 - elastic search
 
-        monitoringService.record(eventDocument)
-          .then((response) => console.log(response))
-          .catch((error) => console.error(error));
-      } else {
-        console.log('calling elastic search');
-        // 404 - elastic search
 
-        var errorDetails = elasticSearchPayloadBuilder.getErrorPayload()
 
-        monitoringService.record(errorDetails)
-          .then((response) => console.log(response))
-          .catch((error) => console.error(error));
-      }
+          var errorDetails = elasticSearchPayloadBuilder.getErrorPayload(site);
+
+          {
+            errorId: 'website',
+            priorityLevel: 'P1',
+            country: `${helpers.getCountry(site.url)}`,
+            status: 'au',
+           // hostname: `${}`,
+            errorCategory: 'apiError',
+            errorEndpoint: 'myob.com/au',
+            statusCode: '404',
+            errorMsg: 'Server unavailable',
+            hostname: 'dev'
+          };
+
+
+
+          monitoringService.record(err, errorDetails)
+            .then((response) => console.log(response))
+            .catch((error) => console.error(error));
+        }
+      });
+
     }).then(() => {
-    var auHTML = {
-      links: ['au']
-    }
-    auHTML.links.forEach((link) => {
-      apiService.checkUrl(link);
+      var auHTML = {
+        links: ['au']
+      }
+      auHTML.links.forEach((link) => {
+        apiService.checkUrl(link);
+      })
     })
-  })
 }
 
 module.exports = {
