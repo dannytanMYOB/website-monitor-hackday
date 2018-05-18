@@ -28,7 +28,7 @@ function getSuccessPayload(site) {
         country: `${helpers.getCountry(site)}`,
         status: 'Success',
         hostname: `${helpers.getHost(site)}`,
-        endpoint: url,
+        endpoint: site,
         statusCode: 200,
     };
 

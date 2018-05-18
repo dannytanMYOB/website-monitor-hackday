@@ -8,11 +8,12 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var healthCheckService = require('./services/healthCheckService');
+var HealthCheckController = require('./controllers/healthCheckController');
 
 var app = express();
 
-healthCheckService.performHealthCheck();
+var HealthCheckControllerSingleton = new HealthCheckController();
+HealthCheckControllerSingleton.performHealthCheck();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
