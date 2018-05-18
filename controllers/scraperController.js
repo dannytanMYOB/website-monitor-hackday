@@ -3,9 +3,6 @@ var x = Xray();
 const apiService = require('../services/apiService.js');
 
 class Scraper {
-  constructor() {
-   
-  }
 
   static removeUndefined(array) {
     let filteredArray = array;
@@ -127,19 +124,19 @@ class Scraper {
   }
 }
 
-const s = new Scraper();
+module.exports = Scraper;
 
 
-apiService
-  .checkUrl('https://www.myob.com/au/')
-  .then((data) => {
-    const html = data.data;
+// apiService
+//   .checkUrl('https://store.myob.com.au/buy/cart?productId=1-13AI1EJ&intcid=prdesspg-03&_ga=2.161255674.633784021.1526526793-195222335.1506905049&ajs_aid=71f289dd-b93f-42fb-b209-59a40d062fe0')
+//   .then((data) => {
+//     const html = data.data;
 
-    s.startScrape(html).then(data => {
-      console.log(data);
-    });
+//     s.startScrape(html).then(data => {
+//       console.log(data);
+//     });
 
-  })
-  .catch((error) => {
-    console.log('err', error)
-  });
+//   })
+//   .catch((error) => {
+//     console.log('err', error)
+//   });
