@@ -3,7 +3,6 @@
 // var passphrase = process.env.API_CERT_PASSPHRASE ? process.env.API_CERT_PASSPHRASE : '';
 
 module.exports = {
-  application: 'Website Monitoring Application',
   environment: 'development',
   settings: {
   //     // Note the 'buy' essentially hidden on the staging server
