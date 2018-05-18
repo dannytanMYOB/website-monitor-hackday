@@ -1,5 +1,6 @@
 var apiService = require('../services/apiService');
 var monitoringService = require('../services/monitoringService');
+var monitoringService = require('../services/monitoringService');
 
 var AU_URL = 'https://www.myob.com/au';
 var NZ_URL = 'https://www.myob.com/nz';
