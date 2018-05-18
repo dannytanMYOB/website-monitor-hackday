@@ -1,5 +1,6 @@
 var apiService = require('../services/apiService');
 var monitoringService = require('../services/monitoringService');
+var scraperService = require('../services/scraperService');
 var elasticSearchPayloadBuilder = require('../helpers/elasticSearchPayloadBuilder');
 
 var AU_URL = 'https://www.myob.com/au';
@@ -11,13 +12,16 @@ function getWebpageStatus() {
   sites.push(apiService.checkUrl(NZ_URL))
 
   Promise.all(sites)
-    .then((sites) => {
-      sites.forEach((site) => {
-        console.log(site.url)
-        if (site.status === '200') {
-          //return scrapingService.scrape(site.data)
-          console.log('call scrapers');
+      .then((sites) => {
+          sites.forEach((site) => {
+              console.log(site.url)
+              if (site.status === '200') {
+        console.log('callling scrapers');
+        var scrapedData =  scraperService.scrape(site.data)
 
+                  console.log('scrapedData: ', scrapedData)
+
+        // Form Document
           // var eventDetails = {
           //   errorId: 'website',
           //   priorityLevel: 'P1',
@@ -34,9 +38,6 @@ function getWebpageStatus() {
         } else {
           console.log('calling elastic search');
           // 404 - elastic search
-
-
-
           var errorDetails = elasticSearchPayloadBuilder.getErrorPayload(site.url);
           
           // {
@@ -51,8 +52,22 @@ function getWebpageStatus() {
           //   errorMsg: 'Server unavailable',
           //   hostname: 'dev'
           // };
+          var errorDetails = elasticSearchPayloadBuilder.getErrorPayload(site);
 
-          
+          // {
+          //   errorId: 'website',
+          //   priorityLevel: 'P1',
+          //   country: `${helpers.getCountry(site.url)}`,
+          //   status: 'au',
+          //  // hostname: `${}`,
+          //   errorCategory: 'apiError',
+          //   errorEndpoint: 'myob.com/au',
+          //   statusCode: '404',
+          //   errorMsg: 'Server unavailable',
+          //   hostname: 'dev'
+          // };
+
+
 
           monitoringService.record(err, errorDetails)
             .then((response) => console.log(response))
