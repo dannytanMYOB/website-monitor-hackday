@@ -126,9 +126,10 @@ class Scraper {
 
 module.exports = Scraper;
 
+// const s = new Scraper();
 
 // apiService
-//   .checkUrl('https://store.myob.com.au/buy/cart?productId=1-13AI1EJ&intcid=prdesspg-03&_ga=2.161255674.633784021.1526526793-195222335.1506905049&ajs_aid=71f289dd-b93f-42fb-b209-59a40d062fe0')
+//   .checkUrl('https://www.myob.com/au/support')
 //   .then((data) => {
 //     const html = data.data;
 
