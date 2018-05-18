@@ -6,7 +6,7 @@ function getErrorPayload(site) {
         application: 'website',
         priorityLevel: 'P1',
         country: `${helpers.getCountry(site.url)}`,
-        status: 'Error',
+        status: 'DOWN',
         hostname: `${helpers.getHost(url)}`,
         endpoint: url,
         statusCode: 404,
@@ -26,7 +26,7 @@ function getSuccessPayload(site) {
     return {
         application: 'website',
         country: `${helpers.getCountry(site)}`,
-        status: 'Success',
+        status: 'UP',
         hostname: `${helpers.getHost(site)}`,
         endpoint: site,
         statusCode: 200,

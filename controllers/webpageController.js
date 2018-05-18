@@ -18,22 +18,27 @@ class WebPageController {
 
     Promise.all(sites)
       .then((sites) => {
-        var monitoringServiceResult
+        var monitoringServiceResults = []
         sites.forEach((site) => {
           if (parseInt(site.status) === 200) {
             console.log(site.url);
             var successDetails = elasticSearchPayloadBuilder.getSuccessPayload(site.url);
-            monitoringServiceResult = [monitoringService.record(successDetails), sites]
+            monitoringServiceResults.push(monitoringService.record(successDetails))
           } else {
             var errorDetails = elasticSearchPayloadBuilder.getErrorPayload(site);
-            monitoringServiceResult = [monitoringService.record(errorDetails), sites]
+            monitoringServiceResults.push(monitoringService.record(errorDetails));
           }
         });
 
-        return monitoringServiceResult
+        monitoringServiceResults.push(sites)
+        return Promise.all(monitoringServiceResults)
       })
 
-      .then((result) => {
+      .then((results) => {
+        var [auSite, nzSite] = results[2];
+        console.log('auSite: ', auSite);
+        console.log('nzSite: ', nzSite);
+
         this.Scraper.startScrape(site.data)
           .then((scrapedData) => {
             console.log('scrapedData: ', scrapedData)
