@@ -10,8 +10,7 @@ class WebPageController {
   constructor() {
     this.Scraper = new scraperService();
   }
-
-
+  
   getWebpageStatus() {
     var sites = [];
     sites.push(apiService.checkUrl(AU_URL));
@@ -19,65 +18,30 @@ class WebPageController {
 
     Promise.all(sites)
       .then((sites) => {
+        var monitoringServiceResult
         sites.forEach((site) => {
           if (parseInt(site.status) === 200) {
             console.log(site.url);
             var successDetails = elasticSearchPayloadBuilder.getSuccessPayload(site.url);
-            console.log(successDetails);
-            monitoringService.record(successDetails)
-              .then((response) => console.log(response))
-              .catch((error) => console.error(error));
-
-
-            this.Scraper.startScrape(site.data)
-              .then((scrapedData) => {
-                console.log('scrapedData: ', scrapedData)
-              })
-
-            // Form Document
-            // var eventDetails = {
-            //   errorId: 'website',
-            //   priorityLevel: 'P1',
-            //   country: 'au',
-            //   status: 'au',
-            //   hostname: 'hostname',
-            //   errorCategory: 'Website',
-            //   errorEndpoint: 'myob.com/au'
-            // };
-            //
-            // monitoringService.record({}, eventDetails)
-            //   .then((response) => console.log(response))
-            //   .catch((error) => console.error(error));
+            monitoringServiceResult = [monitoringService.record(successDetails), sites]
           } else {
-            console.log('calling elastic search');
-            // 404 - elastic search
-
-
-
             var errorDetails = elasticSearchPayloadBuilder.getErrorPayload(site);
-
-            // {
-            //   errorId: 'website',
-            //   priorityLevel: 'P1',
-            //   country: `${helpers.getCountry(site.url)}`,
-            //   status: 'au',
-            //  // hostname: `${}`,
-            //   errorCategory: 'apiError',
-            //   errorEndpoint: 'myob.com/au',
-            //   statusCode: '404',
-            //   errorMsg: 'Server unavailable',
-            //   hostname: 'dev'
-            // };
-
-
-
-            monitoringService.record(err, errorDetails)
-              .then((response) => console.log(response))
-              .catch((error) => console.error(error));
+            monitoringServiceResult = [monitoringService.record(errorDetails), sites]
           }
         });
 
-      }).then(() => {
+        return monitoringServiceResult
+      })
+
+      .then((result) => {
+        this.Scraper.startScrape(site.data)
+          .then((scrapedData) => {
+            console.log('scrapedData: ', scrapedData)
+          })
+          .catch((error) => console.error(error))
+      })
+
+      .then(() => {
         var auHTML = {
           links: ['au']
         }
