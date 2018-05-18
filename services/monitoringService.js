@@ -40,7 +40,7 @@ class MonitoringService {
       if (eventData.environmentHostname !== self.environment.hostname) {
         self.environment.hostname = eventData.environmentHostname;
       }
-console.log('INSIDE MONITORING')
+console.log('INSIDE MONITORING - ', eventData)
       // Form Document
       var eventDocument = {
         application: eventData.application, // MYOB Website or Node App
