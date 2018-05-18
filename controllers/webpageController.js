@@ -19,6 +19,7 @@ function getWebpageStatus() {
         // Form Document
         var eventDocument = {
           application: 'website', // MYOB Website or Node App
+          category: 'website',
           status: 'success', // Error or Success
           country: 'AU', // AU or NZ
           environmentHostname: 'https://www.myob.com', // {Name and Hostname} as {Production/Dev and endpoint}
@@ -34,7 +35,7 @@ function getWebpageStatus() {
 
         var errorDetails = {
           application: 'website',
-          errorId: 'website',
+          category: 'website',
           priorityLevel: 'P1',
           country: 'au',
           status: 'error',

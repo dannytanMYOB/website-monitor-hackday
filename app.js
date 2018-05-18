@@ -10,12 +10,14 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 //var apiService = require('./services/apiService');
 var webpageController = require('./controllers/webpageController');
+var apiController = require('./controllers/apiController');
 
 //var monitoringService = require('./services/monitoringService');
 
 var app = express();
 
-webpageController.getWebpageStatus();
+//webpageController.getWebpageStatus();
+apiController.getAPIStatus();
 //var AU_URL = 'https://www.myob.com/au';
 //var NZ_URL = 'https://www.myob.com/nz';
 

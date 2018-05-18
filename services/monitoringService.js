@@ -49,8 +49,8 @@ console.log('INSIDE MONITORING - ', eventData)
         country: eventData.country, // AU or NZ
         environment: self.environment, // {Name and Hostname} as {Production/Dev and endpoint}
         endpoint: eventData.endpoint, // Actual endpoint hit
+        category: eventData.category, // Actual endpoint hit
         error: {
-          errorId: eventData.errorId, // HomepageError or LinkError or APIError
           errorCode: eventData.statusCode, // HTTP Statuscode
           errorMsg: eventData.errorMsg, // Message for error user generated
           priorityLevel: eventData.priorityLevel, // P1 or P2 or P3
