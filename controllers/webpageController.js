@@ -1,5 +1,6 @@
 var apiService = require('../services/apiService');
 var monitoringService = require('../services/monitoringService');
+var elasticSerachPayloadBuilder = require('../helpers/elasticSerachPayloadBuilder');
 
 var AU_URL = 'https://www.myob.com/au';
 var NZ_URL = 'https://www.myob.com/nz';
@@ -32,20 +33,7 @@ function getWebpageStatus() {
         console.log('calling elastic search');
         // 404 - elastic search
 
-        var errorDetails = {
-          application: 'website',
-          errorId: 'website',
-          priorityLevel: 'P1',
-          country: `au`,
-          status: 'error',
-          hostname: 'hostname',
-          errorCategory: 'apiError',
-          errorEndpoint: 'myob.com/au',
-          endpoint: 'myob.com/au',
-          statusCode: '404',
-          errorMsg: 'Server unavailable',
-          environmentHostname: 'https://www.myob.com', // {Name and Hostname} as {Production/Dev and endpoint}
-        };
+        var errorDetails = elasticSerachPayloadBuilder.getErrorPayload()
 
         monitoringService.record(errorDetails)
           .then((response) => console.log(response))

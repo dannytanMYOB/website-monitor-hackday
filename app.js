@@ -20,9 +20,10 @@ function performHealthCheck() {
     setTimeout(() => {
         webpageController.getWebpageStatus();
         performHealthCheck()
-    }, timeCalculators.getMinutesInMiliseconds(5))
+    }, timeCalculators.getMinutesInMiliseconds(0.5))
 }
 
+webpageController.getWebpageStatus();
 performHealthCheck()
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
