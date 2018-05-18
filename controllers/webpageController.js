@@ -40,9 +40,20 @@ function getWebpageStatus() {
         } else {
           console.log('calling elastic search');
           // 404 - elastic search
-
-
-
+          var errorDetails = elasticSearchPayloadBuilder.getErrorPayload(site.url);
+          
+          // {
+          //   errorId: 'website',
+          //   priorityLevel: 'P1',
+          //   country: `${helpers.getCountry(site.url)}`,
+          //   status: 'au',
+          //  // hostname: `${}`,
+          //   errorCategory: 'apiError',
+          //   errorEndpoint: 'myob.com/au',
+          //   statusCode: '404',
+          //   errorMsg: 'Server unavailable',
+          //   hostname: 'dev'
+          // };
           var errorDetails = elasticSearchPayloadBuilder.getErrorPayload(site);
 
           // {
