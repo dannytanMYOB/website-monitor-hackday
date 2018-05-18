@@ -30,6 +30,7 @@ function getSuccessPayload(site) {
         hostname: `${helpers.getHost(site)}`,
         endpoint: site,
         statusCode: 200,
+        category: 'website'
     };
 
 }
