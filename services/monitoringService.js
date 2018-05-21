@@ -33,6 +33,7 @@ class MonitoringService {
       
       // Reject if incomplete
       // @todo: Determine better means of validation
+
       if (!eventData) {
         return reject(new Error(PARAMETER_ERROR_MESSAGE));
       }
@@ -40,6 +41,7 @@ class MonitoringService {
       if (eventData.environmentHostname !== self.environment.hostname) {
         self.environment.hostname = eventData.environmentHostname;
       }
+
       // Form Document
       var eventDocument = {
         application: eventData.application, // MYOB Website or Node App

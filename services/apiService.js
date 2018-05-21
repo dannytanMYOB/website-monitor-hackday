@@ -13,8 +13,8 @@ function checkUrl(url) {
 		.catch(error => {
 			return {
 				data: undefined,
-				status: error.response.status,
-				url: response.responseUrl
+				status: error.response ?  error.response.status : '404',
+				url
 			}
 		});
 }

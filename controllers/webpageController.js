@@ -10,7 +10,7 @@ class WebPageController {
   constructor() {
     this.Scraper = new scraperService();
   }
-  
+
   getWebpageStatus() {
     var sites = [];
     sites.push(apiService.checkUrl(AU_URL));
@@ -21,8 +21,7 @@ class WebPageController {
         var monitoringServiceResults = []
         sites.forEach((site) => {
           if (parseInt(site.status) === 200) {
-            console.log(site.url);
-            var successDetails = elasticSearchPayloadBuilder.getSuccessPayload(site.url);
+            var successDetails = elasticSearchPayloadBuilder.getSuccessPayload(site.url, 'website');
             monitoringServiceResults.push(monitoringService.record(successDetails))
           } else {
             var errorDetails = elasticSearchPayloadBuilder.getErrorPayload(site);
@@ -35,25 +34,38 @@ class WebPageController {
       })
 
       .then((results) => {
-        var [auSite, nzSite] = results[2];
-        console.log('auSite: ', auSite);
-        console.log('nzSite: ', nzSite);
-
-        this.Scraper.startScrape(site.data)
-          .then((scrapedData) => {
-            console.log('scrapedData: ', scrapedData)
-          })
-          .catch((error) => console.error(error))
-      })
-
-      .then(() => {
-        var auHTML = {
-          links: ['au']
-        }
-        auHTML.links.forEach((link) => {
-          apiService.checkUrl(link);
+        var sites = results[2];
+        var scraperPromises = []
+        sites.forEach((site) => {
+          scraperPromises.push(this.Scraper.startScrape(site.data))
         })
+
+        return Promise.all(scraperPromises)
       })
+      .then((scrapedData) => {
+        var linkPromises = []
+        scrapedData.forEach((site) => {
+          site.links.forEach((link) => {
+            linkPromises.push(apiService.checkUrl(link));
+          })
+        })
+
+        return Promise.all(linkPromises)
+      })
+      .then((linkCalls) => {
+      
+        var monitoringServiceResults = [];
+        linkCalls.forEach((link) => {
+          var successDetails = elasticSearchPayloadBuilder.getSuccessPayload(link, 'link');
+          monitoringServiceResults.push(monitoringService.record(successDetails))
+        })
+        // var successDetails = elasticSearchPayloadBuilder.getSuccessPayload(linkCalls[0], 'link');
+        // monitoringServiceResults.push(monitoringService.record(successDetails))
+        return Promise.all(monitoringServiceResults)
+      })
+      .then((yay) => {
+        console.log('YAYYYYYY>>>>>>>>>>>>>> ', yay)
+      }).catch((error) => console.error(error))
   }
 }
 
