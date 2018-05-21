@@ -21,8 +21,7 @@ function getErrorPayload(site) {
 }
 
 
-function getSuccessPayload(site) {
-    console.log('site',site)
+function getSuccessPayload(site, category) {
     return {
         application: 'website',
         country: `${helpers.getCountry(site)}`,
@@ -30,7 +29,7 @@ function getSuccessPayload(site) {
         hostname: `${helpers.getHost(site)}`,
         endpoint: site,
         statusCode: 200,
-        category: 'website'
+        category
     };
 
 }

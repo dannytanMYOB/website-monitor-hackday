@@ -33,7 +33,7 @@ class MonitoringService {
       
       // Reject if incomplete
       // @todo: Determine better means of validation
-      console.log(eventData);
+     // console.log(eventData);
       if (!eventData) {
         return reject(new Error(PARAMETER_ERROR_MESSAGE));
       }
@@ -41,7 +41,7 @@ class MonitoringService {
       if (eventData.environmentHostname !== self.environment.hostname) {
         self.environment.hostname = eventData.environmentHostname;
       }
-console.log('INSIDE MONITORING - ', eventData)
+//console.log('INSIDE MONITORING - ', eventData)
       // Form Document
       var eventDocument = {
         application: eventData.application, // MYOB Website or Node App
@@ -57,7 +57,7 @@ console.log('INSIDE MONITORING - ', eventData)
           priorityLevel: eventData.priorityLevel, // P1 or P2 or P3
         }
       };
-      console.log('INSIDE MONITORING calling index  -  ', eventDocument)
+    //  console.log('INSIDE MONITORING calling index  -  ', eventDocument)
       // Index Document
       self._index(eventDocument)
         .then(result => fulfill(result))
@@ -74,7 +74,7 @@ console.log('INSIDE MONITORING - ', eventData)
   // @todo: The index function returns a promise so should just be returning that call without wrapping in a new promise and using callbacks.
   _index(doc, documentType = 'events') {
     let self = this;
-    console.log('INSIDE INDEX - ', doc)
+    //console.log('INSIDE INDEX - ', doc)
     return new Promise((fulfill, reject) => {
       self.client.index({
         index: self.documentTypes[documentType].index, 
